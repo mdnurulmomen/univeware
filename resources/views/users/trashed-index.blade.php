@@ -35,17 +35,11 @@
 
                     <div  class="bg-white border-b border-gray-200">
                         <div  class="p-6 mb-6 flex justify-between">
-                            <p class="font-bold">{{ __("Users List") }}</p>
+                            <p class="font-bold">{{ __("Deleted Users List") }}</p>
 
-                            <div>
-                                <x-hyperlink-yellow-button href="{{ route('users.trashed') }}">
-                                    {{ __('Trashed Users') }}
-                                </x-hyperlink-yellow-button>
-
-                                <x-hyperlink-blue-button href="{{ route('users.create') }}">
-                                    {{ __('Add New User') }}
-                                </x-hyperlink-blue-button>
-                            </div>
+                            <x-hyperlink-blue-button href="{{ route('users.index') }}">
+                                {{ __('User List') }}
+                            </x-hyperlink-blue-button>
                         </div>
 
                         <div class="relative overflow-x-auto">
@@ -73,14 +67,16 @@
                                                 {{ $user->username }}
                                             </td>
                                             <td class="px-6 py-4">
-                                                <x-hyperlink-lime-button href="{{ route('users.edit', $user->id) }}">
-                                                    {{ __('Edit') }}
-                                                </x-hyperlink-lime-button>
-
-                                                <form  action="{{ route('users.destroy', $user->id) }}"  method="POST"  onsubmit="return confirm('{{ trans('Want to delete ? ') }}');"  style="display: inline-block;">
+                                                <form  action="{{ route('users.delete', $user->id) }}"  method="POST"  onsubmit="return confirm('{{ trans('Want to delete permanently ? ') }}');"  style="display: inline-block;">
                                                     <input  type="hidden"  name="_method"  value="DELETE">
                                                     <input  type="hidden"  name="_token"  value="{{ csrf_token() }}">
-                                                    <input  type="submit"  class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 ml-1" value="Delete">
+                                                    <input  type="submit"  class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 focus:outline-none dark:focus:ring-red-800 ml-1" value="Permanent Delete">
+                                                </form>
+
+                                                <form  action="{{ route('users.restore', $user->id) }}"  method="POST"  onsubmit="return confirm('{{ trans('Want to restore ? ') }}');"  style="display: inline-block;">
+                                                    <input  type="hidden"  name="_method"  value="PUT">
+                                                    <input  type="hidden"  name="_token"  value="{{ csrf_token() }}">
+                                                    <input  type="submit"  class="text-white bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800 ml-1" value="Restore">
                                                 </form>
                                             </td>
                                         </tr>

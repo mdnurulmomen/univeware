@@ -11,7 +11,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\File;
-use App\Providers\RouteServiceProvider;
 
 class UserController extends Controller
 {
@@ -70,7 +69,7 @@ class UserController extends Controller
 
         Auth::login($user);
 
-        return redirect('/users')
+        return redirect()->back()
             ->with('message', 'New user has been created!');
     }
 
@@ -124,7 +123,7 @@ class UserController extends Controller
             'type' => $request->type,
         ]);
 
-        return redirect('/users')
+        return redirect()->route('users.index')
             ->with('message', 'User has been updated!');
     }
 
@@ -135,7 +134,50 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return redirect('/users')
+        return redirect()->back()
             ->with('message', 'User has been deleted!');
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function trashedIndex(): View
+    {
+        return view('users.trashed-index')
+            ->with('users', User::onlyTrashed()->orderBy('updated_at', 'DESC')->get());
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function restore(Request $request, User $user): RedirectResponse
+    {
+        // If the user is not soft-deleted, return a 404 response.
+        if (! $user->trashed()) {
+            return redirect()->back()
+            ->with('error', 'User not found!');
+        }
+
+        $user->restore();
+
+        return redirect()->back()
+            ->with('message', 'User has been restored!');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function delete(User $user): RedirectResponse
+    {
+        // If the user is not soft-deleted, return a 404 response.
+        if (! $user->trashed()) {
+            return redirect()->back()
+            ->with('error', 'User not trashed!');
+        }
+
+        $user->forceDelete();
+
+        return redirect()->back()
+            ->with('message', 'User has been deleted permanently!');
     }
 }
