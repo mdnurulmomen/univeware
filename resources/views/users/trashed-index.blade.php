@@ -74,7 +74,7 @@
                                                 </form>
 
                                                 <form  action="{{ route('users.restore', $user->id) }}"  method="POST"  onsubmit="return confirm('{{ trans('Want to restore ? ') }}');"  style="display: inline-block;">
-                                                    <input  type="hidden"  name="_method"  value="PUT">
+                                                    <input  type="hidden"  name="_method"  value="PATCH">
                                                     <input  type="hidden"  name="_token"  value="{{ csrf_token() }}">
                                                     <input  type="submit"  class="text-white bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-yellow-600 dark:hover:bg-yellow-700 focus:outline-none dark:focus:ring-yellow-800 ml-1" value="Restore">
                                                 </form>

@@ -141,7 +141,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function trashedIndex(): View
+    public function trashed(): View
     {
         return view('users.trashed-index')
             ->with('users', User::onlyTrashed()->orderBy('updated_at', 'DESC')->get());
