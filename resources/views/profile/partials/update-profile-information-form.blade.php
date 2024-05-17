@@ -17,10 +17,41 @@
         @csrf
         @method('patch')
 
+        <!-- Prefix Name -->
         <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
+            <x-input-label for="prefixname" :value="__('Prefix Name')" />
+            <x-select-input id="prefixname" name="prefixname" :selected="$user->prefixname" :options="['mr' => 'Mr', 'mrs' => 'Mrs', 'ms' => 'Ms']" label="Prefix Name" />
+            <x-input-error :messages="$errors->get('prefixname')" class="mt-2" />
+        </div>
+
+        <div>
+            <x-input-label for="firstname" :value="__('Firstname')" />
+            <x-text-input id="firstname" name="firstname" type="text" class="mt-1 block w-full" :value="old('firstname', $user->firstname)" required autofocus autocomplete="firstname" />
+            <x-input-error class="mt-2" :messages="$errors->get('firstname')" />
+        </div>
+
+        <div>
+            <x-input-label for="middlename" :value="__('Middlename')" />
+            <x-text-input id="middlename" name="middlename" type="text" class="mt-1 block w-full" :value="old('middlename', $user->middlename)" required autofocus autocomplete="middlename" />
+            <x-input-error class="mt-2" :messages="$errors->get('middlename')" />
+        </div>
+
+        <div>
+            <x-input-label for="lastname" :value="__('Lastname')" />
+            <x-text-input id="lastname" name="lastname" type="text" class="mt-1 block w-full" :value="old('lastname', $user->lastname)" required autofocus autocomplete="lastname" />
+            <x-input-error class="mt-2" :messages="$errors->get('lastname')" />
+        </div>
+
+        <div>
+            <x-input-label for="suffixname" :value="__('Suffixname')" />
+            <x-text-input id="suffixname" name="suffixname" type="text" class="mt-1 block w-full" :value="old('suffixname', $user->suffixname)" required autofocus autocomplete="suffixname" />
+            <x-input-error class="mt-2" :messages="$errors->get('suffixname')" />
+        </div>
+
+        <div>
+            <x-input-label for="username" :value="__('Username')" />
+            <x-text-input id="username" name="username" type="text" class="mt-1 block w-full" :value="old('username', $user->username)" required autofocus autocomplete="username" />
+            <x-input-error class="mt-2" :messages="$errors->get('username')" />
         </div>
 
         <div>
@@ -45,6 +76,12 @@
                     @endif
                 </div>
             @endif
+        </div>
+
+        <div>
+            <x-input-label for="type" :value="__('Type')" />
+            <x-text-input id="type" name="type" type="text" class="mt-1 block w-full" :value="old('type', $user->type)" required autofocus autocomplete="type" />
+            <x-input-error class="mt-2" :messages="$errors->get('type')" />
         </div>
 
         <div class="flex items-center gap-4">
