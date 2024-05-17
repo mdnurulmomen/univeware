@@ -51,7 +51,7 @@ class UserController extends Controller
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'type' => $request->type,
+            'type' => $request->type ?? 'user',
         ];
 
         try {
@@ -96,7 +96,7 @@ class UserController extends Controller
             'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'type' => $request->type,
+            'type' => $request->type ?? 'user',
         ];
 
         try {
