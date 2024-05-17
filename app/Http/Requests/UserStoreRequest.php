@@ -3,16 +3,24 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
-use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProfileUpdateRequest extends FormRequest
+class UserStoreRequest extends FormRequest
 {
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -22,8 +30,9 @@ class ProfileUpdateRequest extends FormRequest
             'middlename' => ['nullable', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
             'suffixname' => ['nullable', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$this->user()->id],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
+            'username' => ['required', 'string', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'photo' => [
                 'nullable', 'file', 'max:2',
                 File::image()

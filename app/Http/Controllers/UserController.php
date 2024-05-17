@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\File;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Auth\Events\Registered;
+use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserUpdateRequest;
+
 
 class UserController extends Controller
 {
@@ -34,25 +35,8 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(UserStoreRequest $request): RedirectResponse
     {
-        $request->validate([
-            'prefixname' => ['nullable', 'string', 'in:mr,mrs,ms', 'max:255'],
-            'firstname' => ['required', 'string', 'max:255'],
-            'middlename' => ['nullable', 'string', 'max:255'],
-            'lastname' => ['required', 'string', 'max:255'],
-            'suffixname' => ['nullable', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:'.User::class],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'photo' => [
-                'nullable', 'file', 'max:2',
-                File::image()
-                ->max(2 * 1024)
-            ],
-            'type' => ['nullable', 'string', 'max:255'],
-        ]);
-
         $user = User::create([
             'prefixname' => $request->prefixname,
             'firstname' => $request->firstname,
@@ -74,14 +58,6 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(User $user): View
@@ -93,24 +69,8 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user): RedirectResponse
+    public function update(UserUpdateRequest $request, User $user): RedirectResponse
     {
-        $request->validate([
-            'prefixname' => ['nullable', 'string', 'in:mr,mrs,ms', 'max:255'],
-            'firstname' => ['required', 'string', 'max:255'],
-            'middlename' => ['nullable', 'string', 'max:255'],
-            'lastname' => ['required', 'string', 'max:255'],
-            'suffixname' => ['nullable', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:users,username,'.$user->id],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,'.$user->id],
-            'photo' => [
-                'nullable', 'file', 'max:2',
-                File::image()
-                ->max(2 * 1024)
-            ],
-            'type' => ['nullable', 'string', 'max:255'],
-        ]);
-
         $user->update([
             'prefixname' => $request->prefixname,
             'firstname' => $request->firstname,
