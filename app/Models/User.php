@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable
 {
@@ -41,4 +42,24 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Get the user's first name.
+     */
+    protected function fullName(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => "{$this->prefixname} {$this->firstname} {$this->middlename} {$this->lastname} {$this->suffixname}"
+        );
+    }
+
+    /**
+     * Get the user's first name.
+     */
+    protected function middleInitial(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => ucfirst(substr("{$this->middlename}", 0, 1)).'.'
+        );
+    }
 }
