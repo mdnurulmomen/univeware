@@ -46,6 +46,11 @@ After installation, build
 npm run dev
 ```
 
+Run the application
+```
+php artisan serve
+```
+
 ## Folders
 
 - `app` - Contains all the Eloquent models
