@@ -11,17 +11,22 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Registered;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
-
+use App\Services\UserServiceInterface;
+use PhpParser\Node\Stmt\TryCatch;
 
 class UserController extends Controller
 {
+    public function __construct(private UserServiceInterface $userServiceInterface)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(): View
     {
         return view('users.index')
-            ->with('users', User::orderBy('updated_at', 'DESC')->get());
+            ->with('users', $this->userServiceInterface->index());
     }
 
     /**
@@ -37,7 +42,7 @@ class UserController extends Controller
      */
     public function store(UserStoreRequest $request): RedirectResponse
     {
-        $user = User::create([
+        $userData = [
             'prefixname' => $request->prefixname,
             'firstname' => $request->firstname,
             'middlename' => $request->middlename,
@@ -47,14 +52,25 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'type' => $request->type,
-        ]);
+        ];
 
-        event(new Registered($user));
+        try {
 
-        Auth::login($user);
+            $user = $this->userServiceInterface->store($userData);
 
-        return redirect()->back()
-            ->with('message', 'New user has been created!');
+            event(new Registered($user));
+
+            Auth::login($user);
+
+            return redirect()->back()
+                ->with('message', 'New user has been created!');
+
+        } catch (\Throwable $th) {
+
+            return redirect()->back()
+                ->with('error', $th->getMessage());
+
+        }
     }
 
     /**
@@ -71,7 +87,7 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user): RedirectResponse
     {
-        $user->update([
+        $userData = [
             'prefixname' => $request->prefixname,
             'firstname' => $request->firstname,
             'middlename' => $request->middlename,
@@ -81,10 +97,21 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'type' => $request->type,
-        ]);
+        ];
 
-        return redirect()->route('users.index')
+        try {
+
+            $this->userServiceInterface->update($userData, $user);
+
+            return redirect()->route('users.index')
             ->with('message', 'User has been updated!');
+
+        } catch (\Throwable $th) {
+
+            return redirect()->back()
+                ->with('error', $th->getMessage());
+
+        }
     }
 
     /**
@@ -92,10 +119,21 @@ class UserController extends Controller
      */
     public function destroy(User $user): RedirectResponse
     {
-        $user->delete();
+        try {
 
-        return redirect()->back()
+            $this->userServiceInterface->destroy($user);
+
+            return redirect()->back()
             ->with('message', 'User has been deleted!');
+
+        } catch (\Throwable $th) {
+
+            return redirect()->back()
+                ->with('error', $th->getMessage());
+
+        }
+
+
     }
 
     /**
@@ -104,7 +142,7 @@ class UserController extends Controller
     public function trashed(): View
     {
         return view('users.trashed-index')
-            ->with('users', User::onlyTrashed()->orderBy('updated_at', 'DESC')->get());
+            ->with('users', $this->userServiceInterface->trashed());
     }
 
     /**
@@ -112,16 +150,19 @@ class UserController extends Controller
      */
     public function restore(Request $request, User $user): RedirectResponse
     {
-        // If the user is not soft-deleted, return a 404 response.
-        if (! $user->trashed()) {
+        try {
+
+            $this->userServiceInterface->restore($user);
+
             return redirect()->back()
-            ->with('error', 'User not found!');
-        }
-
-        $user->restore();
-
-        return redirect()->back()
             ->with('message', 'User has been restored!');
+
+        } catch (\Throwable $th) {
+
+            return redirect()->back()
+            ->with('error', $th->getMessage());
+
+        }
     }
 
     /**
@@ -129,15 +170,18 @@ class UserController extends Controller
      */
     public function delete(User $user): RedirectResponse
     {
-        // If the user is not soft-deleted, return a 404 response.
-        if (! $user->trashed()) {
+        try {
+
+            $this->userServiceInterface->delete($user);
+
             return redirect()->back()
-            ->with('error', 'User not trashed!');
+                ->with('message', 'User has been deleted permanently!');
+
+        } catch (\Throwable $th) {
+
+            return redirect()->back()
+            ->with('error', $th->getMessage());
+
         }
-
-        $user->forceDelete();
-
-        return redirect()->back()
-            ->with('message', 'User has been deleted permanently!');
     }
 }
