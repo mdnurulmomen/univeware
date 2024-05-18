@@ -2,9 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Model;
-
 interface UserServiceInterface
 {
     function index();
@@ -14,4 +11,5 @@ interface UserServiceInterface
     function trashed();
     function restore($user);
     function delete($user);
+    function hash($password);
 }

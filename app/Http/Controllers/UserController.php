@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Registered;
 use App\Http\Requests\UserStoreRequest;
@@ -50,7 +50,7 @@ class UserController extends Controller
             'suffixname' => $request->suffixname,
             'username' => $request->username,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => $this->userServiceInterface->hash($request->password),
             'type' => $request->type ?? 'user',
         ];
 
@@ -62,7 +62,7 @@ class UserController extends Controller
 
             Auth::login($user);
 
-            return redirect()->back()
+            return redirect()->route('users.index')
                 ->with('message', 'New user has been created!');
 
         } catch (\Throwable $th) {
@@ -95,7 +95,7 @@ class UserController extends Controller
             'suffixname' => $request->suffixname,
             'username' => $request->username,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => $this->userServiceInterface->hash($request->password),
             'type' => $request->type ?? 'user',
         ];
 

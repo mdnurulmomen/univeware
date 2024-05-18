@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Model;
 
 class UserService implements UserServiceInterface
@@ -47,5 +48,10 @@ class UserService implements UserServiceInterface
     public function delete($user)
     {
         $user->forceDelete();
+    }
+
+    public function hash($password)
+    {
+        return  Hash::make($password);
     }
 }
