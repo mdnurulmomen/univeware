@@ -29,11 +29,12 @@ Generate a new application key
     php artisan key:generate
 ```
 
-Run the database migrations 
+Run the database migrations and seeder
 
 (**Set the database connection & credentials mentioned in .env before migrating**)
 ```
     php artisan migrate
+    php artisan db:seed
 ```
 
 Install *node* dependencis
@@ -41,7 +42,7 @@ Install *node* dependencis
 npm install
 ```
 
-After installation, build
+After installation, build with *npm*
 ```
 npm run dev
 ```
@@ -50,6 +51,14 @@ Run the application
 ```
 php artisan serve
 ```
+
+# Testing
+
+Run the [Test Cases](https://laravel.com/docs/10.x/testing)
+
+    php artisan test
+
+----------
 
 ## Folders
 
