@@ -2,13 +2,10 @@
 
 namespace Tests\Feature;
 
+use Tests\TestCase;
 use App\Models\User;
 use App\Services\UserService;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Support\Facades\Auth;
 
 class UserServiceTest extends TestCase
 {
@@ -37,7 +34,9 @@ class UserServiceTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $userToDelete = User::factory()->create()->delete();
+        User::onlyTrashed()->forceDelete();
+
+        User::factory()->create()->delete();
 
         $userService = new UserService($user);
 
